@@ -1,0 +1,86 @@
+---
+title: "Assignment for Plotly"
+date: "February 4, 2017"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+library(plotly)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+## Sample data from cars Dataset
+
+```{r, echo = FALSE, comment=""}
+head(cars)
+```
+
+## Plot for cars dataset
+
+```{r, echo=FALSE}
+set.seed(2017-04-02)
+plot_ly(cars, x=~speed, y=~dist, mode="markers", type="scatter")
+```
+
+## Sample data for EuStockMarkets dataset
+```{r, echo=FALSE, comment=""}
+library(tidyr)
+data("EuStockMarkets")
+head(EuStockMarkets)
+```
+
+## Plot for EuStockMarkets dataset
+```{r, echo=FALSE}
+stocks <- as.data.frame(EuStockMarkets) %>%
+  gather(index, price) %>%
+  mutate(time=rep(time(EuStockMarkets),4))
+
+plot_ly(stocks, x=~time, y=~price, color=~index, mode="markers", type="scatter")
+```
+
+## Box Plot for Midwest dataset
+```{r, echo=FALSE}
+plot_ly(midwest, x = ~percollege, color = ~state, type="box")
+```
+
+## Histogram for cars dataset
+
+```{r, echo=FALSE}
+plot_ly(mtcars, x=~wt,type="histogram")
+```
+
+## Heatmap plot
+```{r, echo=FALSE}
+terrain <- matrix(rnorm(100*100), nrow=100, ncol=100)
+plot_ly(z=terrain,type="heatmap")
+```
+
+
+## choropleth map for US Agriculture 2011 export
+```{r, echo=FALSE}
+df <- read.csv("https://raw.githubusercontent.com/plotly/datasets/master/2011_us_ag_exports.csv")
+
+df$hover <- with(df, paste(state, '<br>', "Beef", beef, "Dairy", dairy, "<br>",
+                           "Fruits", total.fruits, "Veggies", total.veggies,
+                           "<br>", "Wheat", wheat, "Corn", corn))
+
+l <- list(color = toRGB("red"), width = 2)
+
+g <- list(
+  scope = 'usa',
+  projection = list(type = 'albers usa'),
+  showlakes = TRUE,
+  lakecolor = toRGB('white')
+)
+
+plot_ly(df, z = ~total.exports, text = ~hover, locations = ~code, type='choropleth', 
+        color=~total.exports,colors='Purples', locationmode = 'USA-states', 
+        marker= list(line=l))  %>%
+
+  layout(title = '2011 US Agriculture Exports by State<br>(Hover for breakdown)', geo=g)
+
+```
+
+
+## Thank You
